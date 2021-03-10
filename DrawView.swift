@@ -63,8 +63,8 @@ class DrawView: UIView, UIGestureRecognizerDelegate {
         tapRecognizer.require(toFail: doubleTapRecognizer)
         addGestureRecognizer(tapRecognizer)
         
-        //let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(DrawView.longPress(_:)))
-        //addGestureRecognizer(longPressRecognizer)
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(DrawView.longPress(_:)))
+        addGestureRecognizer(longPressRecognizer)
         
         moveRecognizer = UIPanGestureRecognizer(target: self, action: #selector(DrawView.moveLine(_:)))
         moveRecognizer.delegate = self
@@ -147,6 +147,11 @@ class DrawView: UIView, UIGestureRecognizerDelegate {
             currentLines[key]?.end = touch.location(in: self)
             
             }
+        
+        //Print velocity of the pan to the console
+       lineDrawTime += 1
+       print("Line draw time =  \(lineDrawTime)" )
+
         
         setNeedsDisplay()
         
@@ -264,26 +269,26 @@ class DrawView: UIView, UIGestureRecognizerDelegate {
     @objc func longPress(_ gestureRecognizer: UIGestureRecognizer) {
         print("Recognized a long press")
         
-        //if gestureRecognizer.state == .began {
-            //let point = gestureRecognizer.location(in: self)
-            //selectedLineIndex = indexOfLine(at: point)
+        if gestureRecognizer.state == .began {
+           let point = gestureRecognizer.location(in: self)
+            selectedLineIndex = indexOfLine(at: point)
             
-            //if selectedLineIndex != nil {
-                //currentLines.removeAll()
+            if selectedLineIndex != nil {
+                currentLines.removeAll()
                 
                 //Record line selection was conducted by long press
-                //selectedLineIndexLongPress = true
+                selectedLineIndexLongPress = true
                 
-            //}
-        //} else if gestureRecognizer.state == .ended {
-            //selectedLineIndex = nil
+            }
+        } else if gestureRecognizer.state == .ended {
+            selectedLineIndex = nil
             
             //Reset selectedLineIndex to false
-            //selectedLineIndexLongPress = false
+            selectedLineIndexLongPress = false
 
-        //}
+        }
         
-        //setNeedsDisplay()
+        setNeedsDisplay()
     }
     
     @objc func moveLine(_ gestureRecognizer: UIPanGestureRecognizer) {
@@ -325,9 +330,6 @@ class DrawView: UIView, UIGestureRecognizerDelegate {
        
         //Create UITouch variable to refer to the touch object for the PanGestureRecognizer
         
-         //Print velocity of the pan to the console
-        lineDrawTime += 1
-        print("Line draw time =  \(lineDrawTime)" )
         
         
 
